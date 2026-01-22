@@ -1,0 +1,20 @@
+<items gfxroot="gfx/items/" deathanm2="gfx/portraits.anm2" version="1">
+	<passive
+		cache="color"
+		description="Treat yourself"
+		gfx="passive_friendly_fire.png"
+		id="1"
+		name="Friendly Fire"
+		quality="3"
+		special="true"
+	/>
+	<active
+		description="Move to the beat"
+		gfx="active_tick_heart.png"
+		id="2"
+		name="Tick Heart"
+		quality="1"
+		maxcharges="4"
+		chargetype="normal"
+	/>
+</items>

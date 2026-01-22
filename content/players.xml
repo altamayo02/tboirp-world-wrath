@@ -1,0 +1,28 @@
+<players root="gfx/characters/costumes/" portraitroot="gfx/ui/stage/" nameimageroot="gfx/ui/boss/">
+	<player
+		name="The Bomber"
+		skin="character_bomber.png"
+		skinColor="5"
+		nameimage="playername_bomber.png"
+		portrait="playerportrait_bomber.png"
+		hp="6"
+		bombs="1"
+		keys="1"
+		birthright="Value your health"
+	/>
+
+	<player
+		name="The Bomber"
+		skin="character_bomber_b.png"
+		skinColor="1"
+		nameimage="playername_bomber.png"
+		portrait="playerportrait_bomber_b.png"
+		hp="6"
+		bombs="1"
+		canShoot="False"
+		birthright="Forsaken Culprit"
+		bSkinParent="The Bomber"
+		costumeSuffix="bomber_b"
+		costume="104"
+	/>
+</players>

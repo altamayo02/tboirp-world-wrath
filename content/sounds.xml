@@ -1,0 +1,13 @@
+<sounds root="sfx/">
+	<sound id="182" name="Bomb Explode">
+		<sample weight="3" path="boss_explosions_0.wav" />
+		<sample weight="3" path="boss_explosions_1.wav" />
+		<sample weight="2" path="boss_explosions_2.wav" />
+	</sound>
+	<sound id="466" name="Bomb Heart Drop">
+		<sample weight="1" path="gold_heart_drop.wav" />
+	</sound>
+	<sound id="900" name="Bomb Fuse Fizzle">
+		<sample weight="1" path="bomb_fuse_fizzle.wav" />
+	</sound>
+</sounds>

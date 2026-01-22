@@ -1,0 +1,20 @@
+<entities anm2root="gfx/" version="5">
+	<entity
+		anm2path="items/pickups/bomb_heart.anm2"
+		id="5" variant="10" subtype="48" name="Bomb Heart"
+		collisionMass="9"
+		collisionRadius="12"
+		friction="1"
+		numGridCollisionPoints="24"
+		shadowSize="17"
+	/>
+	<entity
+		anm2path="items/pickups/ball_and_chain.anm2"
+		id="999" name="Ball and Chain"
+		collisionMass="40"
+		collisionRadius="12"
+		friction="0"
+		numGridCollisionPoints="24"
+		shadowSize="18"
+	/>
+</entities>

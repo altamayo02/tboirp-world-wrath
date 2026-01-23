@@ -1,3 +1,6 @@
+include("scripts.lib.customhealthapi.core")
+Chapil = CustomHealthAPI.Library
+
 DEBUG = false
 
 ---@class ModReference
@@ -159,9 +162,12 @@ if DEBUG then
 	)
 end
 
-include("scripts.lib.customhealthapi.core")
 include("scripts.helpers")
-include("scripts.friendly_fire")
+
 include("scripts.bomb_heart")
+
 include("scripts.tick_heart")
+include("scripts.friendly_fire")
+
 include("scripts.bomber")
+include("scripts.tainted_bomber")

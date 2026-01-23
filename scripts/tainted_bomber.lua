@@ -1,0 +1,49 @@
+local STAT_DIFFS_B = {
+	[CacheFlag.CACHE_LUCK] = {
+		KEY = "Luck",
+		VALUE = -4
+	}
+}
+local ball_and_chain = {}
+
+
+---@param player EntityPlayer
+local function OnBomberBInit(_, player)
+	local bomber_b_id =Isaac.GetPlayerTypeByName("The Bomber", true)
+	if player:GetPlayerType() == bomber_b_id then
+		player:AddNullCostume(
+			Isaac.GetCostumeIdByPath("gfx/characters/character_bomber_balaclava.anm2")
+		)
+    ball_and_chain = Isaac.Spawn(
+			WorldWrath.ENTITIES.BALL_AND_CHAIN.ID,
+			WorldWrath.ENTITIES.BALL_AND_CHAIN.VARIANT,
+			WorldWrath.ENTITIES.BALL_AND_CHAIN.SUBTYPE,
+			Vector(player.Position.X - 40, player.Position.Y),
+			Vector(0,0),
+			player
+    )
+		print(ball_and_chain.Position)
+		
+		-- TODO - Only execute when a run is starting
+		player:AddHearts(-2)
+		Chapil.AddHealth(player, "BOMB_HEART", 2)
+	end
+end
+WorldWrath:AddCallback(
+	ModCallbacks.MC_POST_PLAYER_INIT,
+	OnBomberBInit
+)
+
+---@param player EntityPlayer
+local function OnBomberBUpdate(player)
+	local entities = Isaac.GetRoomEntities()
+	for _, entity in pairs(entities) do
+		if entity.Type == WorldWrath.ENTITIES.BALL_AND_CHAIN.ID then
+			
+		end
+	end
+end
+WorldWrath:AddCallback(
+	ModCallbacks.MC_POST_PLAYER_UPDATE,
+	OnBomberBUpdate
+)

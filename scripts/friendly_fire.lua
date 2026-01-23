@@ -16,45 +16,49 @@ local BUFF_PER_HEART_HIT = {
 local STAT_PER_BUFF = {
 	[CacheFlag.CACHE_DAMAGE] = {
 		KEY = "Damage",
-		VALUE = 0.2
+		VALUE = 0.3
 	},
 	[CacheFlag.CACHE_FIREDELAY] = {
 		KEY = "MaxFireDelay",
-		VALUE = -0.6
+		VALUE = -0.9
 	},
 	[CacheFlag.CACHE_SHOTSPEED] = {
 		KEY = "ShotSpeed",
-		VALUE = 0.03
+		VALUE = 0.05
 	},
 	[CacheFlag.CACHE_LUCK] = {
 		KEY = "Luck",
 		VALUE = 1
 	}
 }
+local STAT_CHANCES = {
+	CacheFlag.CACHE_DAMAGE,
+	CacheFlag.CACHE_DAMAGE,
+	CacheFlag.CACHE_FIREDELAY,
+	CacheFlag.CACHE_FIREDELAY,
+	CacheFlag.CACHE_SHOTSPEED,
+	CacheFlag.CACHE_SHOTSPEED,
+	CacheFlag.CACHE_SHOTSPEED,
+	CacheFlag.CACHE_LUCK
+}
+--- @type table<string, table<string, integer>>
 local queue_bombed = {}
+--- @type table<string, table<CacheFlag, number>>
 local added_stats = {}
 --- @type CacheFlag
 local next_stat = CacheFlag.CACHE_ALL
 
 
 ---@param player EntityPlayer
----@param heart_damages string
+---@param heart_damages table<string, integer>
 local function OnHealthSlotBombed(_, player, heart_damages)
 	local player_id = GetPlayerID(player)
 	queue_bombed[player_id] = heart_damages
 
 	local rng = player:GetCollectibleRNG(WorldWrath.PASSIVES.FRIENDLY_FIRE):Next()
-	local stats = {
-		CacheFlag.CACHE_DAMAGE,
-		CacheFlag.CACHE_DAMAGE,
-		CacheFlag.CACHE_FIREDELAY,
-		CacheFlag.CACHE_FIREDELAY,
-		CacheFlag.CACHE_SHOTSPEED,
-		CacheFlag.CACHE_SHOTSPEED,
-		CacheFlag.CACHE_SHOTSPEED,
-		CacheFlag.CACHE_LUCK
-	}
-	next_stat = stats[(rng % 8) + 1]
+	next_stat = STAT_CHANCES[(rng % 8) + 1]
+	player:AddCacheFlags(next_stat)
+	player:EvaluateItems()
 end
 WorldWrath:AddCallback(
 	"POST_HEART_BOMBED",
@@ -66,25 +70,24 @@ WorldWrath:AddCallback(
 local function OnStatsCacheEvaluation(_, player, flag)
 	local player_id = GetPlayerID(player)
 	local player_added_stats = added_stats[player_id]
-	if player_added_stats then
-		if flag == next_stat then
-			local total_buff = 0
-			if next_stat ~= CacheFlag.CACHE_LUCK then
-				for heart_key, hits in pairs(queue_bombed[player_id]) do
-					total_buff = total_buff + BUFF_PER_HEART_HIT[heart_key] * hits
-				end
-			else
-				total_buff = 1
+	if player_added_stats and flag == next_stat then
+		local total_buff = 0
+		if next_stat ~= CacheFlag.CACHE_LUCK then
+			for heart_key, hits in pairs(queue_bombed[player_id]) do
+				total_buff = total_buff + BUFF_PER_HEART_HIT[heart_key] * hits
 			end
-			player_added_stats[next_stat] = (
-				player_added_stats[next_stat] +
-				STAT_PER_BUFF[next_stat].VALUE * total_buff
-			)
-			queue_bombed[player_id] = {}
+		else
+			total_buff = 1
 		end
-		for f, spb in pairs(STAT_PER_BUFF) do
-			player[spb.KEY] = player[spb.KEY] + player_added_stats[f]
-		end
+
+		local spb = STAT_PER_BUFF[next_stat]
+		player_added_stats[next_stat] = (
+			player_added_stats[next_stat] + spb.VALUE * total_buff
+		)
+		player[spb.KEY] = player[spb.KEY] + player_added_stats[next_stat]
+
+		queue_bombed[player_id] = {}
+		next_stat = CacheFlag.CACHE_ALL
 	end
 end
 WorldWrath:AddCallback(

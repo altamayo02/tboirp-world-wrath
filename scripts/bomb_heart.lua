@@ -1,6 +1,3 @@
---include("friendly_fire")
-Chapil = CustomHealthAPI.Library
-
 Chapil.RegisterSoulHealth(
 	"BOMB_HEART",
 	{
@@ -75,11 +72,6 @@ local function RemoveBombedHearts(player, index_slot)
 
 	DecreaseHealth(player, damages)
 	Isaac.RunCallback("POST_HEART_BOMBED", player, damages)
-	player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
-	player:AddCacheFlags(CacheFlag.CACHE_FIREDELAY)
-	player:AddCacheFlags(CacheFlag.CACHE_SHOTSPEED)
-	player:AddCacheFlags(CacheFlag.CACHE_LUCK)
-	player:EvaluateItems()
 end
 
 
@@ -268,15 +260,6 @@ local function OnBombHeartLoss(
 				print("Down")
 			end
 	
-			-- DEBUG
-			--[[ local explosion = Isaac.Spawn(
-				EntityType.ENTITY_EFFECT,
-				EffectVariant.BOMB_EXPLOSION,
-				0,
-				player.Position,
-				Vector.Zero,
-				player
-			) ]]
 			WorldWrath.GAME:BombExplosionEffects(
 				player.Position,
 				100,

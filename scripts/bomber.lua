@@ -41,8 +41,10 @@ WorldWrath:AddCallback(
 )
 
 local function OnStatsCacheEvaluate(_, player, flag)
-	local stat = STAT_DIFFS[flag]
-	player[stat.KEY] = player[stat.KEY] + stat.VALUE
+	if player:GetPlayerType() == Isaac.GetPlayerTypeByName("The Bomber") then
+		local stat = STAT_DIFFS[flag]
+		player[stat.KEY] = player[stat.KEY] + stat.VALUE
+	end
 end
 WorldWrath:AddCallback(
 	ModCallbacks.MC_EVALUATE_CACHE,

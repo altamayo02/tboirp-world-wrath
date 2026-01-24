@@ -2,10 +2,6 @@ local STAT_DIFFS = {
 	[CacheFlag.CACHE_LUCK] = {
 		KEY = "Luck",
 		VALUE = -4
-	},
-	[CacheFlag.CACHE_SPEED] = {
-		KEY = "MoveSpeed",
-		VALUE = -0.75
 	}
 }
 ---@type EntityFamiliar[]
@@ -33,9 +29,12 @@ WorldWrath:AddCallback(
 )
 
 local function OnStatsCacheEvaluate(_, player, flag)
-	local stat = STAT_DIFFS[flag]
-	if stat then
-		player[stat.KEY] = player[stat.KEY] + stat.VALUE
+	local bomber_b_id = Isaac.GetPlayerTypeByName("The Bomber", true)
+	if player:GetPlayerType() == bomber_b_id then
+		local stat = STAT_DIFFS[flag]
+		if stat then
+			player[stat.KEY] = player[stat.KEY] + stat.VALUE
+		end
 	end
 end
 WorldWrath:AddCallback(

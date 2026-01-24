@@ -14,7 +14,7 @@
 		id="2"
 		name="Tick Heart"
 		quality="1"
-		maxcharges="4"
+		maxcharges="3"
 		chargetype="normal"
 	/>
 </items>

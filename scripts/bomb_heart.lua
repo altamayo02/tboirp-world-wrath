@@ -43,20 +43,20 @@ local function RemoveBombedHearts(player, index_slot)
 	
 	local damages = {}
 	for _, heart in pairs(damaged_slot) do
-		if heart.Key ~= "" then
-			local hits = heart.HP
-			if hits == 0 then
-				hits = 1
-			elseif heart.Key == "BOMB_HEART" then
-				hits = 2
-			end
-			damages[heart.Key] = hits
+		local hits = heart.HP
+		if hits == 0 then
+			hits = 1
+		elseif heart.Key == "BOMB_HEART" or heart.Key == "ROTTEN_HEART" then
+			hits = 2
 		end
+		damages[heart.Key] = hits
 	end
 	if (
 		player:GetEternalHearts() ~= 0 and
 		(
+			-- Eternal heart is on a heart container
 			player:GetEffectiveMaxHearts() == 2 * index_slot or
+			-- Eternal heart is on another kind of heart
 			(player:GetEffectiveMaxHearts() == 0 and index_slot == 2)
 		)
  	) then
@@ -64,11 +64,14 @@ local function RemoveBombedHearts(player, index_slot)
 			ETERNAL_HEART = 1
 		}
 	end
-	local str = ""
-	for heart_key, hits in pairs(damages) do
-		str = str .. heart_key .. ": " .. hits .. "; "
+
+	if DEBUG then
+		local str = ""
+		for heart_key, hits in pairs(damages) do
+			str = str .. heart_key .. ": " .. hits .. "; "
+		end
+		print(str)
 	end
-	print(str)
 
 	DecreaseHealth(player, damages)
 	Isaac.RunCallback("POST_HEART_BOMBED", player, damages)
@@ -78,7 +81,7 @@ end
 ---@param pickup EntityPickup
 ---@param variant integer
 ---@param subtype integer
-local function OnPickupSelection(pickup, variant, subtype)
+local function OnPickupSelect(pickup, variant, subtype)
 	local subtypes = {
 		[HeartSubType.HEART_FULL] = "stupid lua",
 		[HeartSubType.HEART_HALF] = "stupid lua",
@@ -101,7 +104,7 @@ local function OnPickupSelection(pickup, variant, subtype)
 end
 WorldWrath:AddCallback(
 	ModCallbacks.MC_POST_PICKUP_SELECTION,
-	OnPickupSelection,
+	OnPickupSelect,
 	EntityType.ENTITY_PICKUP
 )
 
@@ -133,7 +136,7 @@ WorldWrath:AddCallback(
 ---@param pickup EntityPickup
 ---@param collider Entity
 ---@return boolean | nil
-local function OnBombHeartCollision(_, pickup, collider)
+local function OnBombHeartCollide(_, pickup, collider)
 	local player = collider:ToPlayer()
 	if (
 		not player or
@@ -216,13 +219,13 @@ end
 WorldWrath:AddPriorityCallback(
 	ModCallbacks.MC_PRE_PICKUP_COLLISION,
 	CallbackPriority.LATE,
-	OnBombHeartCollision,
+	OnBombHeartCollide,
 	WorldWrath.PICKUPS.BOMB_HEART.VARIANT
 )
 
 ---@param player EntityPlayer
 ---@param heart_key string
-local function OnBombHeartLoss(
+local function OnBombHeartLose(
 	player,
 	dmg_flags,
 	heart_key,
@@ -238,32 +241,34 @@ local function OnBombHeartLoss(
 			local hearts = Chapil.GetHealthInOrder(player)
 			local num_broken_hearts = player:GetBrokenHearts()
 			local index = #hearts - num_broken_hearts
-	
-			if index ~= 6 then
-				local index_left = index
-				RemoveBombedHearts(player, index_left)
-				print("Left")
+			
+			local indices = {
+				Left = {
+					[index ~= 6] = index
+				},
+				Up = {
+					[index >= 6] = (index % 6) + 1
+				},
+				Right = {
+					[index ~= 5 and num_broken_hearts ~= 0] = #hearts + 2
+				},
+				Down = {
+					[num_broken_hearts >= 6] = index + 6
+				}
+			}
+			for direction, slot_index in pairs(indices) do
+				if slot_index[true] then
+					RemoveBombedHearts(player, slot_index[true])
+					if DEBUG then
+						print(direction)
+					end
+				end
 			end
-			if index >= 6 then
-				local index_above = (index % 6) + 1
-				RemoveBombedHearts(player, index_above)
-				print("Up")
-			end
-			if index ~= 5 and num_broken_hearts ~= 0 then
-				local index_right = #hearts + 2
-				RemoveBombedHearts(player, index_right)
-				print("Right")
-			end
-			if num_broken_hearts >= 6 then
-				local index_below = index + 6
-				RemoveBombedHearts(player, index_below)
-				print("Down")
-			end
-	
+
 			WorldWrath.GAME:BombExplosionEffects(
 				player.Position,
 				100,
-				TearFlags.TEAR_NORMAL,
+				player:GetBombFlags(),
 				Color.Default,
 				player
 			)
@@ -274,5 +279,5 @@ Chapil.AddCallback(
 	"World Wrath",
 	CustomHealthAPI.Enums.Callbacks.POST_HEALTH_DAMAGED,
 	0,
-	OnBombHeartLoss
+	OnBombHeartLose
 )

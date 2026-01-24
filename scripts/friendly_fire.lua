@@ -51,7 +51,7 @@ local next_stat = CacheFlag.CACHE_ALL
 
 ---@param player EntityPlayer
 ---@param heart_damages table<string, integer>
-local function OnHealthSlotBombed(_, player, heart_damages)
+local function OnHealthSlotExplode(_, player, heart_damages)
 	local player_id = GetPlayerID(player)
 	queue_bombed[player_id] = heart_damages
 
@@ -62,12 +62,12 @@ local function OnHealthSlotBombed(_, player, heart_damages)
 end
 WorldWrath:AddCallback(
 	"POST_HEART_BOMBED",
-	OnHealthSlotBombed
+	OnHealthSlotExplode
 )
 
 ---Increases one of Isaac's stats based on the slots a bomb heart has damaged
 ---@param player EntityPlayer
-local function OnStatsCacheEvaluation(_, player, flag)
+local function OnStatsCacheEvaluate(_, player, flag)
 	local player_id = GetPlayerID(player)
 	local player_added_stats = added_stats[player_id]
 	if player_added_stats and flag == next_stat then
@@ -92,22 +92,22 @@ local function OnStatsCacheEvaluation(_, player, flag)
 end
 WorldWrath:AddCallback(
 	ModCallbacks.MC_EVALUATE_CACHE,
-	OnStatsCacheEvaluation,
+	OnStatsCacheEvaluate,
 	CacheFlag.CACHE_DAMAGE
 )
 WorldWrath:AddCallback(
 	ModCallbacks.MC_EVALUATE_CACHE,
-	OnStatsCacheEvaluation,
+	OnStatsCacheEvaluate,
 	CacheFlag.CACHE_FIREDELAY
 )
 WorldWrath:AddCallback(
 	ModCallbacks.MC_EVALUATE_CACHE,
-	OnStatsCacheEvaluation,
+	OnStatsCacheEvaluate,
 	CacheFlag.CACHE_SHOTSPEED
 )
 WorldWrath:AddCallback(
 	ModCallbacks.MC_EVALUATE_CACHE,
-	OnStatsCacheEvaluation,
+	OnStatsCacheEvaluate,
 	CacheFlag.CACHE_LUCK
 )
 

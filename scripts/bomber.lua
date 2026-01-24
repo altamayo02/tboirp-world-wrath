@@ -24,7 +24,7 @@ local function OnBomberInit(_, player)
 		WorldWrath.GAME:GetItemPool():RemoveCollectible(
 			WorldWrath.ACTIVES.TICK_HEART
 		)
-		player:AddCollectible(WorldWrath.ACTIVES.TICK_HEART, 4)
+		player:AddCollectible(WorldWrath.ACTIVES.TICK_HEART, 3)
 		player:AddCollectible(WorldWrath.PASSIVES.FRIENDLY_FIRE)
 		player:AddNullCostume(
 			Isaac.GetCostumeIdByPath("gfx/characters/character_bomber_balaclava.anm2")
@@ -40,35 +40,35 @@ WorldWrath:AddCallback(
 	OnBomberInit
 )
 
-local function OnStatsCacheEvaluation(_, player, flag)
+local function OnStatsCacheEvaluate(_, player, flag)
 	local stat = STAT_DIFFS[flag]
 	player[stat.KEY] = player[stat.KEY] + stat.VALUE
 end
 WorldWrath:AddCallback(
 	ModCallbacks.MC_EVALUATE_CACHE,
-	OnStatsCacheEvaluation,
+	OnStatsCacheEvaluate,
 	CacheFlag.CACHE_SPEED
 )
 WorldWrath:AddCallback(
 	ModCallbacks.MC_EVALUATE_CACHE,
-	OnStatsCacheEvaluation,
+	OnStatsCacheEvaluate,
 	CacheFlag.CACHE_FIREDELAY
 )
 WorldWrath:AddCallback(
 	ModCallbacks.MC_EVALUATE_CACHE,
-	OnStatsCacheEvaluation,
+	OnStatsCacheEvaluate,
 	CacheFlag.CACHE_SHOTSPEED
 )
 WorldWrath:AddCallback(
 	ModCallbacks.MC_EVALUATE_CACHE,
-	OnStatsCacheEvaluation,
+	OnStatsCacheEvaluate,
 	CacheFlag.CACHE_LUCK
 )
 
-local function OnGameStarted(is_continued)
+local function OnGameStart(is_continued)
 	game_is_continued = is_continued
 end
 WorldWrath:AddCallback(
 	ModCallbacks.MC_POST_GAME_STARTED,
-	OnGameStarted
+	OnGameStart
 )

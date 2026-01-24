@@ -1,9 +1,18 @@
 function shallowcopy(table)
-    local copy = {}
-    for k, v in pairs(table) do
-        copy[k] = v
-    end
-    return copy
+	local copy = {}
+	for k, v in pairs(table) do
+			copy[k] = v
+	end
+	return copy
+end
+
+---@param v1 Vector
+---@param v2 Vector
+function distance(v1, v2)
+	return math.sqrt(
+		(v2.X - v1.X) ^ 2 +
+		(v2.Y - v1.Y) ^ 2
+	)
 end
 
 ---Clears all kinds of vanilla hearts from
@@ -74,8 +83,9 @@ function DecreaseHealth(player, hits)
 				for _, slot in pairs(other_health) do
 					for _, heart in pairs(slot) do
 						if heart.Key == "BLACK_HEART" then
+							-- ISSUE - Sacrifice rooms take two hits
 							black_count = black_count + heart.HP
-							if black_count < black_hearts - 2 then
+							if black_count <= black_hearts - 2 + (black_hearts % 2) then
 								Chapil.AddHealth(player, heart.Key, heart.HP)
 							end
 						else

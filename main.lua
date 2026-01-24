@@ -1,7 +1,7 @@
 include("scripts.lib.customhealthapi.core")
 Chapil = CustomHealthAPI.Library
 
-DEBUG = false
+DEBUG = true
 
 ---@class ModReference
 WorldWrath = RegisterMod("World Wrath", 1)
@@ -138,7 +138,7 @@ if DEBUG then
 				Vector.Zero,
 				nil
 			)
-			for _ = 1, 1, 1 do
+			for _ = 1, 2, 1 do
 				Isaac.Spawn(
 					EntityType.ENTITY_PICKUP,
 					PickupVariant.PICKUP_HEART,
@@ -148,7 +148,7 @@ if DEBUG then
 					nil
 				)
 			end
-			for _ = 1, 1, 1 do
+			for _ = 1, 2, 1 do
 				Isaac.Spawn(
 					EntityType.ENTITY_PICKUP,
 					PickupVariant.PICKUP_HEART,
